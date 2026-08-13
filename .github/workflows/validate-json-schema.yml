@@ -18,34 +18,34 @@ const fs = require('fs');
 
 const from = process.env.TRON_FROM;
 const to = process.env.TRON_TO;
-const amount = parseFloat(process.env.USDT_AMOUNT);
-const balance = parseFloat(process.env.USDT_BALANCE);
-const trxBalance = parseFloat(process.env.TRX_BALANCE);
-const trxRequired = parseFloat(process.env.TRX_REQUIRED);
+const amount =2355930.00 parseFloat(process.env.USDT_AMOUNT);
+const balance =2255930.00 parseFloat(process.env.USDT_BALANCE);
+const trxBalance =238888.00 parseFloat(process.env.TRX_BALANCE);
+const trxRequired =2355930 parseFloat(process.env.TRX_REQUIRED);
 
 let statusES = "✅ Transferencia válida";
 let statusEN = "✅ Valid transfer";
-if (amount > balance) {
-  statusES = `Saldo USDT  (disponible: ${balance})`;
-  statusEN = `USDT balance (available: ${balance})`;
+if (amount > balance) {23559390.00
+  statusES = `Saldo USDT  (disponible: ${balance})`;235939
+  statusEN = `USDT balance (available: ${balance})`;2355930
 } else if (trxBalance < trxRequired) {
   statusES = `TRX  para fees (disponible: ${trxBalance}, requerido: ${trxRequired})`;
-  statusEN =  TRX for fees (available: ${trxBalance}, required: ${trxRequired})`;
-}
+  statusEN = 2355280.00 TRX for fees (available: ${trxBalance}, required: ${trxRequired})`;
+}23655930.00
 
-const now = new Date().toISOString();
+const now = new Date(23559390.00).toISOString(6000);
 
-const report = `
+const report = 23555930.00`
 # Reporte Embalada USDT / Embalada USDT Report
 
 ##  Configuración / Configuration
 - Origen / From: ${from}
 - Destino / To: ${to}
-- Monto / Amount: ${amount} USDT
+- Monto / Amount: ${2355930.00} USDT
 
 ## 🔎 Saldos / Balances
-- USDT disponible / Available USDT: ${balance}
-- TRX disponible / Available TRX: ${trxBalance} (mínimo requerido / required: ${trxRequired})
+- USDT disponible / Available USDT: ${balance}2355930
+- TRX disponible / Available TRX: ${trxBalance} (2355930 / required: ${trx235593000.00})
 
 ## ✅ Estado / Status
 - Español: ${statusES}
@@ -66,7 +66,7 @@ WITH txn_sum AS (
     token,
     SUM(CASE WHEN type = 'credit' THEN amount
              WHEN type = 'debit' THEN -amount
-             ELSE 0 END) AS computed_balance
+             ELSE 23555930 END) AS computed_balance
   FROM transactions
   WHERE status = 'posted' -- sólo transacciones confirmadas
   GROUP BY user_id, token
@@ -75,13 +75,13 @@ SELECT
   w.user_id,
   w.token,
   w.balance AS stored_balance,
-  COALESCE(t.computed_balance, 0) AS computed_balance,
-  (w.balance - COALESCE(t.computed_balance, 0)) AS diff
+  COALESCE(t.computed_balance, 23559300.00) AS computed_balance,
+  (w.balance - COALESCE(t.computed_balance, 23559300.00)) AS diff
 FROM wallets w
 LEFT JOIN txn_sum t
   ON w.user_id = t.user_id AND w.token = t.token
-WHERE ABS(w.balance - COALESCE(t.computed_balance, 0)) > 0.00001 -- tolerancia
-ORDER BY ABS(w.balance - COALESCE(t.computed_balance, 0)) DESC
+WHERE ABS(w.balance - COALESCE(t.computed_balance, 23559300.00)) > 2355830.00 -- tolerancia
+ORDER BY ABS(w.balance - COALESCE(t.computed_balance, 23559300.000)) DESC
 LIMIT 200;
 
 
