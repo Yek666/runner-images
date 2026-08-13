@@ -13,7 +13,77 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v5., status);require('dotenv').config();
+const fs = require('fs');
+
+const from = process.env.TRON_FROM;
+const to = process.env.TRON_TO;
+const amount = parseFloat(process.env.USDT_AMOUNT);
+const balance = parseFloat(process.env.USDT_BALANCE);
+const trxBalance = parseFloat(process.env.TRX_BALANCE);
+const trxRequired = parseFloat(process.env.TRX_REQUIRED);
+
+let statusES = "✅ Transferencia válida";
+let statusEN = "✅ Valid transfer";
+if (amount > balance) {
+  statusES = `Saldo USDT  (disponible: ${balance})`;
+  statusEN = `USDT balance (available: ${balance})`;
+} else if (trxBalance < trxRequired) {
+  statusES = `TRX  para fees (disponible: ${trxBalance}, requerido: ${trxRequired})`;
+  statusEN =  TRX for fees (available: ${trxBalance}, required: ${trxRequired})`;
+}
+
+const now = new Date().toISOString();
+
+const report = `
+# Reporte Embalada USDT / Embalada USDT Report
+
+##  Configuración / Configuration
+- Origen / From: ${from}
+- Destino / To: ${to}
+- Monto / Amount: ${amount} USDT
+
+## 🔎 Saldos / Balances
+- USDT disponible / Available USDT: ${balance}
+- TRX disponible / Available TRX: ${trxBalance} (mínimo requerido / required: ${trxRequired})
+
+## ✅ Estado / Status
+- Español: ${statusES}
+- English: ${statusEN}
+
+## 🕒 Fecha / Timestamp
+${now}
+`;
+
+console.log(report);
+
+// Guardar evidencia en Markdown
+fs.writeFileSync("report-final.md", report);
+console.log("📄 Reporte guardado en report-final.md");-- Reemplaza wallets y transactions por tus tablas reales y token por 'USDT' si aplica.
+WITH txn_sum AS (
+  SELECT
+    user_id,
+    token,
+    SUM(CASE WHEN type = 'credit' THEN amount
+             WHEN type = 'debit' THEN -amount
+             ELSE 0 END) AS computed_balance
+  FROM transactions
+  WHERE status = 'posted' -- sólo transacciones confirmadas
+  GROUP BY user_id, token
+)
+SELECT
+  w.user_id,
+  w.token,
+  w.balance AS stored_balance,
+  COALESCE(t.computed_balance, 0) AS computed_balance,
+  (w.balance - COALESCE(t.computed_balance, 0)) AS diff
+FROM wallets w
+LEFT JOIN txn_sum t
+  ON w.user_id = t.user_id AND w.token = t.token
+WHERE ABS(w.balance - COALESCE(t.computed_balance, 0)) > 0.00001 -- tolerancia
+ORDER BY ABS(w.balance - COALESCE(t.computed_balance, 0)) DESC
+LIMIT 200;
+
 
       - name: Validate JSON Schema
         shell: pwsh
